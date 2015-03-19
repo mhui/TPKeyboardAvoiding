@@ -247,10 +247,15 @@ static const int kStateKey;
 
 
 - (UIEdgeInsets)TPKeyboardAvoiding_contentInsetForKeyboard {
+    if(!self.window || !self.superview)
+    {
+        return UIEdgeInsetsZero;
+    }
     TPKeyboardAvoidingState *state = self.keyboardAvoidingState;
     UIEdgeInsets newInset = self.contentInset;
     CGRect keyboardRect = state.keyboardRect;
-    newInset.bottom = keyboardRect.size.height - MAX((CGRectGetMaxY(keyboardRect) - CGRectGetMaxY(self.bounds)), 0);
+    CGRect windowFrame = [self.superview convertRect:self.frame toView:self.window];
+    newInset.bottom = keyboardRect.size.height - (CGRectGetHeight(self.window.frame) - CGRectGetMaxY(windowFrame));
     return newInset;
 }
 
